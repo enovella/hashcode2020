@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rm /tmp/total
-clear && for i in `ls input/*.txt`; do echo $i; node script $i output/`basename $i`.out | egrep "totalScore:" | sed "s/{ totalScore: //g" | sed "s/ }//g" | tee -a /tmp/total; done
+for i in `ls input/*.txt`; do echo $i; node script $i output/`basename $i`.out | egrep "totalScore:" | sed "s/{ totalScore: //g" | sed "s/ }//g" | tee -a /tmp/total; done
 
 echo "-----------------------------"
 

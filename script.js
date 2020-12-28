@@ -29,6 +29,14 @@ for (let l=0; l<LIBRARIES; l++) {
   })
 }
 
+console.log({
+  minScansPerDay: Math.min(...libraries.map((l) => l.scansPerDay)),
+  maxScansPerDay: Math.max(...libraries.map((l) => l.scansPerDay)),
+})
+console.log({
+  minSignUp: Math.min(...libraries.map((l) => l.signUp)),
+  maxSignUp: Math.max(...libraries.map((l) => l.signUp)),
+})
 const avgScansPerDay = libraries.reduce((acc, l) => acc += l.scansPerDay, 0) / libraries.length
 console.log({ avgScansPerDay })
 
@@ -43,8 +51,7 @@ const scoreLibrary = (library, assignedBooks, day) => {
   return filtered.reduce((acc, bookId) => acc += scores[bookId], 0)
 }
 
-const failed = {}
-libraries.sort((a, b) => a.signUp - b.signUp)
+libraries.sort((a, b) => a.signUp - b.signUp || b.scansPerDay - a.scansPerDay)
 const assignedBooks = {}
 const scannings = []
 let candidates = [...libraries]
@@ -63,7 +70,6 @@ while (scannings.length < libraries.length) {
   filtered.forEach((bookId) => assignedBooks[bookId] = true)
   candidates.splice(candidates.indexOf(library), 1)
 }
-console.log({ failed: Object.keys(failed).length })
 
 let output = ''
 output += `${scannings.length}\n`
