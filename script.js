@@ -38,7 +38,9 @@ const countNew = (library, assignedBooks) => {
 
 const scoreLibrary = (library, assignedBooks, day) => {
   const effectiveDays = DAYS - day - library.signUp
-
+  const effectiveBooks = effectiveDays * library.scansPerDay
+  const filtered = library.bookIds.filter((b) => !assignedBooks[b]).slice(0, effectiveBooks)
+  return filtered.reduce((acc, bookId) => acc += scores[bookId], 0)
 }
 
 const failed = {}
@@ -46,12 +48,12 @@ libraries.sort((a, b) => a.signUp - b.signUp)
 const assignedBooks = {}
 const scannings = []
 let candidates = [...libraries]
+let nextSignup = 0
 while (scannings.length < libraries.length) {
   const samples = candidates.slice(0, 100)
-  const sortedSamples = samples
-    .sort((a, b) => countNew(b, assignedBooks) - countNew(a, assignedBooks))
-  let library = sortedSamples.find((l) => l.scansPerDay > avgScansPerDay)
-  if (!library) { library = sortedSamples[0]; failed[library.id] = true}
+  const library = samples
+    .sort((a,b) => scoreLibrary(b, assignedBooks, nextSignup) - scoreLibrary(a, assignedBooks, nextSignup))
+    [0]
 
   const filtered = library.bookIds.filter((bookId) => !assignedBooks[bookId])
   scannings.push({
