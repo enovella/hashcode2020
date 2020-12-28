@@ -50,7 +50,7 @@ const scannings = []
 let candidates = [...libraries]
 let nextSignup = 0
 while (scannings.length < libraries.length) {
-  const samples = candidates.slice(0, 100)
+  const samples = candidates.slice(0, 50)
   const library = samples
     .sort((a,b) => scoreLibrary(b, assignedBooks, nextSignup) - scoreLibrary(a, assignedBooks, nextSignup))
     [0]
