@@ -51,17 +51,17 @@ const scoreLibrary = (library, assignedBooks, day) => {
   const effectiveDays = DAYS - day - library.signUp
   const effectiveBooks = effectiveDays * library.scansPerDay
   const filtered = library.bookIds.filter((b) => !assignedBooks[b]).slice(0, effectiveBooks)
-  return filtered.reduce((acc, bookId) => acc += scores[bookId], 0)
+  return filtered.reduce((acc, bookId) => acc += scores[bookId], 0) / library.signUp
 }
 
-libraries.sort((a, b) => a.signUp - b.signUp)
+libraries.sort((a, b) => a.signUp - b.signUp || b.scansPerDay - a.scansPerDay || b.totalBooks - a.totalBooks)
 const assignedBooks = {}
 const scannings = []
 let nextSignup = 0
 const candidates = [...libraries]
 const total = candidates.length
 while (scannings.length < total) {
-  const samples = candidates.slice(0, 50)
+  const samples = candidates.slice(0, 200)
   const library = samples
     .sort((a,b) => scoreLibrary(b, assignedBooks, nextSignup) - scoreLibrary(a, assignedBooks, nextSignup))
     [0]
