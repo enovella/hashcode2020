@@ -32,14 +32,22 @@ for (let l=0; l<LIBRARIES; l++) {
 libraries.sort((a, b) => a.signUp - b.signUp)
 const assignedBooks = {}
 const scannings = []
-libraries.forEach((library) => {
+let candidates = [...libraries]
+while (scannings.length < libraries.length) {
+  const samples = candidates.slice(0, 50)
+  let library = samples
+    .sort((a, b) => b.scansPerDay - a.scansPerDay)
+    .find((library) => library.bookIds.filter((bookId) => !assignedBooks[bookId]).length > 10)
+  if (!library) { library = candidates[0]}
+
   const filtered = library.bookIds.filter((bookId) => !assignedBooks[bookId])
   scannings.push({
     libraryId: library.id,
     bookIds: filtered
   })
   filtered.forEach((bookId) => assignedBooks[bookId] = true)
-})
+  candidates.splice(candidates.indexOf(library), 1)
+}
 
 let output = ''
 output += `${scannings.length}\n`
