@@ -1,0 +1,17 @@
+#!/bin/bash
+
+function start_tmux() {
+  set -e
+
+  tmux new-window -n 'RUN-ALL'
+  tmux send-keys "clear && node script input/b_read_on.txt output/b_read_on.out" C-m
+  tmux split-window -h
+  tmux send-keys "clear && node script input/c_incunabula.txt output/c_incunabula.out" C-m
+  tmux split-window -fv
+  tmux send-keys "clear && node script input/d_tough_choices.txt output/d_tough_choices.out" C-m
+  tmux split-window -h -p 66
+  tmux send-keys "clear && node script input/e_so_many_books.txt output/e_so_many_books.out" C-m
+  tmux split-window -h
+  tmux send-keys "clear && node script input/f_libraries_of_the_world.txt output/f_libraries_of_the_world.out" C-m
+}
+start_tmux

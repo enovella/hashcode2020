@@ -1,0 +1,6 @@
+#!/bin/sh
+while inotifywait -e modify -q  script.js; do
+  clear
+  time node script.js $1 $2
+done
+
