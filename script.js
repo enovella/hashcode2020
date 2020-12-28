@@ -20,6 +20,9 @@ const libraries = []
 for (let l=0; l<LIBRARIES; l++) {
   const [totalBooks, signUp, scansPerDay] = readRow(rows, 2 * l + 2 )
   const bookIds  = readRow(rows, 2 * l + 3 )
+  const maxScore = bookIds
+    .map((id) => scores[id])
+    .reduce((acc, v) => acc += v, 0)
   libraries.push({
     id: l,
     totalBooks,
@@ -29,17 +32,17 @@ for (let l=0; l<LIBRARIES; l++) {
   })
 }
 
-console.log({
-  minScansPerDay: Math.min(...libraries.map((l) => l.scansPerDay)),
-  maxScansPerDay: Math.max(...libraries.map((l) => l.scansPerDay)),
-})
-console.log({
-  minSignUp: Math.min(...libraries.map((l) => l.signUp)),
-  maxSignUp: Math.max(...libraries.map((l) => l.signUp)),
-})
+const minScansPerDay = Math.min(...libraries.map((l) => l.scansPerDay))
+const maxScansPerDay= Math.max(...libraries.map((l) => l.scansPerDay))
+const minSignUp = Math.min(...libraries.map((l) => l.signUp))
+const maxSignUp =  Math.max(...libraries.map((l) => l.signUp))
+const minTotalBooks = Math.min(...libraries.map((l) => l.totalBooks))
+const maxTotalBooks =  Math.max(...libraries.map((l) => l.totalBooks))
 const avgScansPerDay = libraries.reduce((acc, l) => acc += l.scansPerDay, 0) / libraries.length
-console.log({ avgScansPerDay })
-
+const avgSignUp = libraries.reduce((acc, l) => acc += l.signUp, 0) / libraries.length
+const avgTotalBooks = libraries.reduce((acc, l) => acc += l.totalBooks, 0) / libraries.length
+console.log({ minScansPerDay, avgScansPerDay, maxScansPerDay})
+console.log({ minTotalBooks,avgTotalBooks, maxTotalBooks})
 const countNew = (library, assignedBooks) => {
   library.bookIds.filter((bookId) => !assignedBooks[bookId]).length
 }
@@ -51,12 +54,13 @@ const scoreLibrary = (library, assignedBooks, day) => {
   return filtered.reduce((acc, bookId) => acc += scores[bookId], 0)
 }
 
-libraries.sort((a, b) => a.signUp - b.signUp || b.scansPerDay - a.scansPerDay)
+libraries.sort((a, b) => a.signUp - b.signUp)
 const assignedBooks = {}
 const scannings = []
-let candidates = [...libraries]
 let nextSignup = 0
-while (scannings.length < libraries.length) {
+const candidates = [...libraries]
+const total = candidates.length
+while (scannings.length < total) {
   const samples = candidates.slice(0, 50)
   const library = samples
     .sort((a,b) => scoreLibrary(b, assignedBooks, nextSignup) - scoreLibrary(a, assignedBooks, nextSignup))
