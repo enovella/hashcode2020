@@ -29,9 +29,9 @@ for (let l=0; l<LIBRARIES; l++) {
   })
 }
 
-const scannings = []
-scannings.push({ libraryId: 1, bookIds: [5, 2 ,3] })
-scannings.push({ libraryId: 0, bookIds: [0, 1, 2, 3, 4] })
+libraries.sort((a, b) => a.signUp - b.signUp)
+
+const scannings = libraries.map((l) => ({ libraryId: l.id, bookIds: l.bookIds }))
 
 let output = ''
 output += `${scannings.length}\n`
@@ -39,7 +39,6 @@ scannings.forEach((s) => {
   output += `${s.libraryId} ${s.bookIds.length}\n`
   output += `${s.bookIds.join(' ')}\n`
 })
-console.log(output)
 
 console.log('Computing score...')
 const scoreScannings = [...scannings]
@@ -52,7 +51,7 @@ for (let d=0; d< DAYS; d++) {
   if (scoreScannings.length && signUpFinishes <= d) {
     const { libraryId, bookIds } = scoreScannings.shift()
 
-    const library = libraries[libraryId]
+    const library = libraries.find(l => l.id === libraryId)
     signUpFinishes = d + library.signUp
     inSignUp = { library, bookIds }
     onBoard.push({ library, signUpFinishes, bookIds })
