@@ -30,8 +30,16 @@ for (let l=0; l<LIBRARIES; l++) {
 }
 
 libraries.sort((a, b) => a.signUp - b.signUp)
-
-const scannings = libraries.map((l) => ({ libraryId: l.id, bookIds: l.bookIds }))
+const assignedBooks = {}
+const scannings = []
+libraries.forEach((library) => {
+  const filtered = library.bookIds.filter((bookId) => !assignedBooks[bookId])
+  scannings.push({
+    libraryId: library.id,
+    bookIds: filtered
+  })
+  filtered.forEach((bookId) => assignedBooks[bookId] = true)
+})
 
 let output = ''
 output += `${scannings.length}\n`
